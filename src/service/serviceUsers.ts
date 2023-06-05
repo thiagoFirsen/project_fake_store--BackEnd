@@ -33,12 +33,16 @@ const doLogin = async (user: string, password: string) => {
   if (!verifyPassword) {
     throw makeError({ message: "Senha inválida", status: 400 });
   }
+  const secret = process.env.SECRET_TOKEN!;
 
+  if (!secret) {
+    throw makeError({ message: "A variável não foi definida", status: 400 });
+  }
   const token = jwt.sign(
     {
       userId: await userId[0].id,
     },
-    process.env.SECRET_TOKEN!,
+    secret,
     { expiresIn: "7 days" }
   );
   return token;
